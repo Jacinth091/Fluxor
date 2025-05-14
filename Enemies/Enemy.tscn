@@ -1,0 +1,118 @@
+[gd_scene load_steps=15 format=3 uid="uid://c487r23ajqhrw"]
+
+[ext_resource type="Script" uid="uid://cyjhxx1d70bp7" path="res://Enemies/Enemy.gd" id="1_4isyn"]
+[ext_resource type="Texture2D" uid="uid://cwl2cs27imryv" path="res://Enemies/Bat.png" id="1_bkvnc"]
+[ext_resource type="Script" uid="uid://63k4fdn8mji0" path="res://Enemies/State Machine.gd" id="3_wdetw"]
+[ext_resource type="Script" uid="uid://cfod4hj1ycq45" path="res://States/EnemyIdle.gd" id="4_jcwuj"]
+[ext_resource type="Script" uid="uid://bo1fhc0dr7tl3" path="res://States/EnemyFollow.gd" id="5_biruh"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_jcwuj"]
+radius = 4.0
+height = 10.0
+
+[sub_resource type="Animation" id="Animation_4isyn"]
+resource_name = "Move"
+length = 0.6
+loop_mode = 1
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [1, 1, 2, 3, 4, 0]
+}
+
+[sub_resource type="Animation" id="Animation_wdetw"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_jcwuj"]
+_data = {
+&"Move": SubResource("Animation_4isyn"),
+&"RESET": SubResource("Animation_wdetw")
+}
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_4isyn"]
+animation = &"Move"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_wdetw"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_jcwuj"]
+switch_mode = 2
+
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_biruh"]
+states/Move/node = SubResource("AnimationNodeAnimation_4isyn")
+states/Move/position = Vector2(449, 100)
+transitions = ["Start", "Move", SubResource("AnimationNodeStateMachineTransition_wdetw"), "Move", "End", SubResource("AnimationNodeStateMachineTransition_jcwuj")]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_biruh"]
+radius = 24.0208
+
+[node name="Enemy" type="CharacterBody2D" groups=["player"]]
+script = ExtResource("1_4isyn")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+unique_name_in_owner = true
+texture = ExtResource("1_bkvnc")
+hframes = 5
+frame = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -2)
+rotation = -1.5708
+shape = SubResource("CapsuleShape2D_jcwuj")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+unique_name_in_owner = true
+libraries = {
+&"": SubResource("AnimationLibrary_jcwuj")
+}
+
+[node name="AnimationTree" type="AnimationTree" parent="."]
+unique_name_in_owner = true
+root_node = NodePath("%AnimationTree/..")
+tree_root = SubResource("AnimationNodeStateMachine_biruh")
+anim_player = NodePath("../AnimationPlayer")
+
+[node name="State Machine" type="Node" parent="." node_paths=PackedStringArray("initial_state") groups=["player"]]
+script = ExtResource("3_wdetw")
+initial_state = NodePath("EnemyIdle")
+
+[node name="EnemyFollow" type="Node" parent="State Machine" node_paths=PackedStringArray("enemy") groups=["player"]]
+unique_name_in_owner = true
+script = ExtResource("5_biruh")
+enemy = NodePath("../..")
+metadata/_custom_type_script = "uid://bo1fhc0dr7tl3"
+
+[node name="EnemyIdle" type="Node" parent="State Machine" node_paths=PackedStringArray("enemy") groups=["player"]]
+unique_name_in_owner = true
+script = ExtResource("4_jcwuj")
+enemy = NodePath("../..")
+metadata/_custom_type_script = "uid://cfod4hj1ycq45"
+
+[node name="Follow Area" type="Area2D" parent="."]
+collision_layer = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Follow Area"]
+position = Vector2(1, -3)
+shape = SubResource("CircleShape2D_biruh")
+
+[connection signal="body_entered" from="Follow Area" to="State Machine/EnemyFollow" method="_on_follow_area_body_entered"]
+[connection signal="body_entered" from="Follow Area" to="State Machine/EnemyIdle" method="_on_follow_area_body_entered"]
