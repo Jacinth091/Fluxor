@@ -1,46 +1,35 @@
 class_name Player extends CharacterBody2D
-const SPEED : float = 1.7
-const MAX_SPEED : int = 75;
-const ACCELERATION : int = 400;
-const FRICTION : int = 400;
 
-@onready var _animationPlayer: AnimationPlayer = %AnimationPlayer
-@onready var _animationTree : AnimationTree = %AnimationTree
-@onready var _animationState = _animationTree.get("parameters/playback")
-@onready var _idleBlendPos : String = "parameters/Idle/blend_position";
-@onready var _runBlendPos : String = "parameters/Run/blend_position";
+# Base States, Animation and Sprite
+@onready var _base_state_machine := %BaseStateMachine
+@onready var _base_animation_player := %BaseAnimations;
+@onready var _player_sprite := %PlayerSprite;
+
+# Weapon State, Animation and Sprite
+@onready var _weapon_state_machine := %WeaponStateMachine
+@onready var _weapon_animation_player := %WeaponAnimations
+@onready var _weapon_sprite := %Weapon.get_node("%WeaponSprite")
 
 
 
-func _physics_process(delta: float) -> void:
-	motion_mode = CharacterBody2D.MOTION_MODE_FLOATING;
-	var _input_vector = Vector2.ZERO
-	_input_vector.x = Input.get_action_strength("MoveRight") - Input.get_action_strength("MoveLeft")
-	_input_vector.y = Input.get_action_strength("MoveDown") - Input.get_action_strength("MoveUp")
-	_input_vector = _input_vector.normalized();
-	if _input_vector != Vector2.ZERO:
-		_animationTree.set(_idleBlendPos, _input_vector);
-		_animationTree.set(_runBlendPos, _input_vector);
-		_animationState.travel("Run");
-		velocity = velocity.move_toward(_input_vector * MAX_SPEED, ACCELERATION * delta)
-		#velocity += _input_vector * ACCELERATION  * delta ;
-		#velocity = velocity.limit_length(MAX_SPEED);
-	else:
-		_animationState.travel("Idle");
-		velocity = velocity.move_toward(Vector2.ZERO, FRICTION * delta)
-		
-	#print(velocity);
-	#print("Player global position:", global_position)
+@onready var _move_component := %MoveComponent;
 
-	move_and_slide();
+var _last_input_direction := Vector2.RIGHT  # Default facing direction
+
+func _ready() -> void:
+	_base_state_machine.init(self as CharacterBody2D, _base_animation_player, _player_sprite, _move_component)
+	_weapon_state_machine.init(self as CharacterBody2D, _weapon_animation_player, _weapon_sprite, _move_component)
 	
-func _playAnimation(_input_vector: Vector2) -> void:
-	if _input_vector.x >= 1:
-		_animationPlayer.play("RunRight")
-	elif _input_vector.x <= -1:
-		_animationPlayer.play("RunLeft")
-	elif _input_vector.y <= -1:
-		_animationPlayer.play("RunUp")
-	elif _input_vector.y >= 1:
-		_animationPlayer.play("RunDown")
-	pass
+
+func _unhandled_input(event: InputEvent) -> void:
+	_base_state_machine.process_input(event);
+	_weapon_state_machine.process_input(event);
+	
+func _process(delta: float) -> void:
+	_base_state_machine.process_frame(delta)
+	_weapon_state_machine.process_frame(delta);
+	
+func _physics_process(delta: float) -> void:
+	_base_state_machine.process_physics(delta);
+	_weapon_state_machine.process_physics(delta);
+	

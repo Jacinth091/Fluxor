@@ -12,7 +12,7 @@ var enemy_movement := Vector2.ZERO
 @onready var _animationState = _animationTree.get("parameters/playback")
 @onready var _sprite : Sprite2D = %Sprite2D
 
-# This will handle the movement logic, adjusted by states
+
 func _physics_process(delta: float) -> void:
 	# Set the movement mode
 	motion_mode = CharacterBody2D.MOTION_MODE_FLOATING;

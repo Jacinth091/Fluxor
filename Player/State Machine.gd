@@ -1,44 +1,44 @@
+class_name StateMachine
 extends Node
 
 @export var initial_state : State = null;
-
-var _states : Dictionary[String, State] = {};
 var _current_state : State = null;
 
-func _ready() -> void:
+
+func init(parent: CharacterBody2D, animation_player: AnimationPlayer, sprite: Sprite2D, move_component : MoveComponent) -> void:
 	for child in get_children():
-		if child is State:
-			_states[child.name.to_lower()] = child;
-			child.Transitioned.connect(on_child_transition)
-			
-	if initial_state:
-		initial_state.Enter()
-		_current_state = initial_state;
-
-func _process(delta: float) -> void:
-	if _current_state:
-		_current_state.Update(delta)
-	pass
-
-func _physics_process(delta: float) -> void:
-	if _current_state:
-		_current_state.Physics_Update(delta)
-	pass
-
-func on_child_transition(state: State, new_state_name: String) -> void:
-	if state != _current_state:
-		return;
+		if child is State:  # Only process nodes that inherit from State
+			child._parent = parent
+			child._animation_player = animation_player
+			child._sprite = sprite;
+		else:
+			push_warning("StateMachine child %s is not a State node" % child.name)
+		child._move_component = move_component;
 	
-	var _new_state = _states.get(new_state_name.to_lower())
-	if !_new_state:
-		return;
-	
-	if _current_state:
-		_current_state.Exit();
-		
-	_new_state.Enter();
-	
-	_current_state = _new_state;
-	pass
+	change_state(initial_state)
 
-		
+
+func change_state(new_state : State)-> void:
+	if _current_state:
+		_current_state.exit();
+	
+	_current_state = new_state;
+	_current_state.enter();
+
+
+# Pass through functions for the Player to call,
+# handling state changes as needed.
+func process_physics(delta: float) -> void:
+	var new_state = _current_state.process_physics(delta)
+	if new_state:
+		change_state(new_state)
+
+func process_input(event: InputEvent) -> void:
+	var new_state = _current_state.process_input(event)
+	if new_state:
+		change_state(new_state)
+
+func process_frame(delta: float) -> void:
+	var new_state = _current_state.process_frame(delta)
+	if new_state:
+		change_state(new_state)
