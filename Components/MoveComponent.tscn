@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3 uid="uid://fquua07r8out"]
+
+[ext_resource type="Script" uid="uid://d31wcs25gv6su" path="res://Components/ComponentScripts/MoveComponent.gd" id="1_t6tmh"]
+[ext_resource type="Resource" uid="uid://lgk1rq0dmkmh" path="res://Player/Player_Move_Stats.tres" id="2_eblfh"]
+
+[node name="MoveComponent" type="Node"]
+script = ExtResource("1_t6tmh")
+move_stats = ExtResource("2_eblfh")
+metadata/_custom_type_script = "uid://d31wcs25gv6su"

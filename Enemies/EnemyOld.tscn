@@ -1,0 +1,133 @@
+[gd_scene load_steps=16 format=3 uid="uid://c487r23ajqhrw"]
+
+[ext_resource type="Script" uid="uid://cyjhxx1d70bp7" path="res://Enemies/Enemy.gd" id="1_m0kuj"]
+[ext_resource type="Texture2D" uid="uid://cwl2cs27imryv" path="res://Enemies/Bat.png" id="2_luysp"]
+[ext_resource type="Script" uid="uid://63k4fdn8mji0" path="res://Enemies/EnemyStateMachine.gd" id="3_0u6k2"]
+[ext_resource type="Script" uid="uid://dyykvnnh18xmn" path="res://States/Enemy States/Enemy_Follow_State.gd" id="4_4gyd2"]
+[ext_resource type="Script" uid="uid://d2xcx34yjojav" path="res://States/Enemy States/Enemy_Idle_State.gd" id="5_gjluc"]
+[ext_resource type="Script" uid="uid://brjew5dw4yir0" path="res://States/Enemy States/Enemy_Wander_State.gd" id="6_rjsph"]
+[ext_resource type="Script" uid="uid://brbinsq417wqr" path="res://States/Enemy States/Enemy_Detection_State.gd" id="7_k7t3e"]
+[ext_resource type="Script" uid="uid://b2xvpdawcufr0" path="res://Components/ComponentScripts/EnemyMoveComponent.gd" id="8_qxul0"]
+[ext_resource type="Script" uid="uid://cs7uw2aybrv2e" path="res://Enemies/PlayerDetector.gd" id="9_vqnkn"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_jcwuj"]
+radius = 4.0
+height = 10.0
+
+[sub_resource type="Animation" id="Animation_wdetw"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("EnemySprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
+}
+
+[sub_resource type="Animation" id="Animation_biruh"]
+resource_name = "bat_idle"
+length = 0.6
+loop_mode = 1
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("EnemySprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [1, 1, 2, 3, 4, 0]
+}
+
+[sub_resource type="Animation" id="Animation_4isyn"]
+resource_name = "bat_move"
+length = 0.6
+loop_mode = 1
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("EnemySprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [1, 1, 2, 3, 4, 0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_jcwuj"]
+_data = {
+&"RESET": SubResource("Animation_wdetw"),
+&"bat_idle": SubResource("Animation_biruh"),
+&"bat_move": SubResource("Animation_4isyn")
+}
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_biruh"]
+radius = 41.0122
+
+[node name="Enemy" type="CharacterBody2D"]
+script = ExtResource("1_m0kuj")
+
+[node name="EnemySprite" type="Sprite2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(0, 1)
+texture = ExtResource("2_luysp")
+hframes = 5
+frame = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+rotation = -1.5708
+shape = SubResource("CapsuleShape2D_jcwuj")
+
+[node name="EnemyAnimation" type="AnimationPlayer" parent="."]
+unique_name_in_owner = true
+libraries = {
+&"": SubResource("AnimationLibrary_jcwuj")
+}
+
+[node name="EnemyStateMachine" type="Node" parent="." node_paths=PackedStringArray("initial_state")]
+unique_name_in_owner = true
+script = ExtResource("3_0u6k2")
+initial_state = NodePath("Wander_State")
+
+[node name="Follow_State" type="Node" parent="EnemyStateMachine" node_paths=PackedStringArray("enemy_idle_state", "enemy_wander_state")]
+script = ExtResource("4_4gyd2")
+enemy_idle_state = NodePath("../Idle_State")
+enemy_wander_state = NodePath("../Wander_State")
+
+[node name="Idle_State" type="Node" parent="EnemyStateMachine" node_paths=PackedStringArray("enemy_detection_state", "enemy_wander_state")]
+script = ExtResource("5_gjluc")
+enemy_detection_state = NodePath("../Detection_State")
+enemy_wander_state = NodePath("../Wander_State")
+
+[node name="Wander_State" type="Node" parent="EnemyStateMachine" node_paths=PackedStringArray("enemy_idle_state", "enemy_detection_state")]
+script = ExtResource("6_rjsph")
+enemy_idle_state = NodePath("../Idle_State")
+enemy_detection_state = NodePath("../Detection_State")
+
+[node name="Detection_State" type="Node" parent="EnemyStateMachine" node_paths=PackedStringArray("enemy_follow_state", "enemy_wander_state")]
+script = ExtResource("7_k7t3e")
+enemy_follow_state = NodePath("../Follow_State")
+enemy_wander_state = NodePath("../Wander_State")
+
+[node name="EnemyMoveComponent" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("8_qxul0")
+
+[node name="PlayerDetectorArea" type="Area2D" parent="." groups=["Player"]]
+unique_name_in_owner = true
+collision_layer = 0
+script = ExtResource("9_vqnkn")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerDetectorArea"]
+shape = SubResource("CircleShape2D_biruh")

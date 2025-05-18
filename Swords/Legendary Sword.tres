@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="Weapon" load_steps=3 format=3 uid="uid://6d54sq5sl4nj"]
+
+[ext_resource type="Texture2D" uid="uid://dt2ak1vjtfclr" path="res://Swords/Icons/icon_32_2_10.png" id="1_05ghn"]
+[ext_resource type="Script" uid="uid://brrdo1v81sn2t" path="res://Player/WeaponResource.gd" id="2_hcd3b"]
+
+[resource]
+script = ExtResource("2_hcd3b")
+name = "Legendary Sword"
+texture = ExtResource("1_05ghn")
+damage = 200.0
+icom = ExtResource("1_05ghn")
+animation = "sword"
+projectile = 0
+metadata/_custom_type_script = "uid://brrdo1v81sn2t"

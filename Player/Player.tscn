@@ -1,16 +1,14 @@
-[gd_scene load_steps=24 format=3 uid="uid://ua0jgl625ama"]
+[gd_scene load_steps=18 format=3 uid="uid://ua0jgl625ama"]
 
 [ext_resource type="Script" uid="uid://bc6dr2re3t6jw" path="res://Player/Player.gd" id="1_q3lat"]
 [ext_resource type="Texture2D" uid="uid://cj3sjmj1rk5hd" path="res://Player/Soldier/Soldier/Soldier.png" id="2_6ysni"]
-[ext_resource type="PackedScene" uid="uid://dhcg608n4bb6q" path="res://Swords/Sword.tscn" id="3_j23h2"]
-[ext_resource type="Script" uid="uid://daxoyx25qqd4y" path="res://Player/State Machine.gd" id="3_tok1r"]
-[ext_resource type="Script" uid="uid://dahfam03un0cc" path="res://States/Idle_State.gd" id="4_ddoul"]
-[ext_resource type="Script" uid="uid://b1gc4vwmjsxca" path="res://States/Run_State.gd" id="5_8g4oa"]
-[ext_resource type="Script" uid="uid://ba40cuo4icowc" path="res://States/Weapon_Attack.gd" id="6_6ysni"]
-[ext_resource type="Script" uid="uid://5rixardjklas" path="res://States/Weapon_Idle.gd" id="6_v0k0e"]
-[ext_resource type="Script" uid="uid://31mppye1y82h" path="res://States/Weapon_Run.gd" id="7_5wa8t"]
-[ext_resource type="Script" uid="uid://b63xxheouw0td" path="res://States/Dodge_State.gd" id="7_vlldt"]
-[ext_resource type="Script" uid="uid://d31wcs25gv6su" path="res://Components/MoveComponent.gd" id="8_s1rgi"]
+[ext_resource type="PackedScene" uid="uid://fquua07r8out" path="res://Components/MoveComponent.tscn" id="6_0j2ni"]
+[ext_resource type="Script" uid="uid://bdxjt6risbf0r" path="res://Components/ComponentScripts/HealthComponent.gd" id="6_6ysni"]
+[ext_resource type="Script" uid="uid://cic7s54oydpa5" path="res://Components/ComponentScripts/HurtboxComponent.gd" id="7_vlldt"]
+[ext_resource type="Script" uid="uid://daxoyx25qqd4y" path="res://Player/State Machine.gd" id="8_s1rgi"]
+[ext_resource type="Script" uid="uid://dahfam03un0cc" path="res://States/Player States/IdleState.gd" id="9_v0k0e"]
+[ext_resource type="Script" uid="uid://b1gc4vwmjsxca" path="res://States/Player States/RunState.gd" id="10_5wa8t"]
+[ext_resource type="Script" uid="uid://b63xxheouw0td" path="res://States/Player States/DashState.gd" id="11_p7tob"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_l2ndj"]
 radius = 4.0
@@ -23,7 +21,7 @@ step = 0.1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("PlayerSprite:frame_coords")
+tracks/0/path = NodePath("Sprite2D:frame_coords")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -40,7 +38,7 @@ step = 0.1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("PlayerSprite:frame")
+tracks/0/path = NodePath("Sprite2D:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -58,7 +56,7 @@ step = 0.1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("PlayerSprite:frame")
+tracks/0/path = NodePath("Sprite2D:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -73,7 +71,7 @@ length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("PlayerSprite:frame")
+tracks/0/path = NodePath("Sprite2D:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -85,7 +83,7 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("PlayerSprite:frame_coords")
+tracks/1/path = NodePath("Sprite2D:frame_coords")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -93,18 +91,6 @@ tracks/1/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [Vector2i(0, 6)]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("WeaponPivot/Weapon:rotation")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [-1.309]
 }
 
 [sub_resource type="Animation" id="Animation_s1rgi"]
@@ -115,7 +101,7 @@ step = 0.07
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("PlayerSprite:frame")
+tracks/0/path = NodePath("Sprite2D:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -134,198 +120,68 @@ _data = {
 &"Run": SubResource("Animation_s1rgi")
 }
 
-[sub_resource type="Animation" id="Animation_p7tob"]
-resource_name = "swing_left_1"
-length = 0.5
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("WeaponPivot/Weapon:rotation")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.06, 0.12, 0.31, 0.41),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
-"update": 0,
-"values": [-1.8326, -3.38245, -5.13127, -3.08574, -3.14159]
-}
-tracks/1/type = "method"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("WeaponStateMachine/WeaponAttack")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0.48),
-"transitions": PackedFloat32Array(1),
-"values": [{
-"args": [],
-"method": &"attack_anim_finished"
-}]
-}
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_vlldt"]
+radius = 6.0
+height = 20.0
 
-[sub_resource type="Animation" id="Animation_dm7nj"]
-resource_name = "swing_right_1"
-length = 0.5
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("WeaponPivot/Weapon:rotation")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.06, 0.1, 0.266667, 0.41),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
-"update": 0,
-"values": [-1.309, 0.240855, 2.02458, -0.0837758, 0.0]
-}
-tracks/1/type = "method"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("WeaponStateMachine/WeaponAttack")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0.5),
-"transitions": PackedFloat32Array(1),
-"values": [{
-"args": [],
-"method": &"attack_anim_finished"
-}]
-}
-
-[sub_resource type="Animation" id="Animation_v0k0e"]
-resource_name = "swing_right_2"
-length = 0.5
-step = 0.01
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("WeaponPivot/Weapon:rotation")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.06, 0.12, 0.31, 0.41),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
-"update": 0,
-"values": [1.309, -0.240855, -2.02458, 0.0837758, 0.0]
-}
-tracks/1/type = "method"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("WeaponStateMachine/WeaponAttack")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0.48),
-"transitions": PackedFloat32Array(1),
-"values": [{
-"args": [],
-"method": &"attack_anim_finished"
-}]
-}
-
-[sub_resource type="Animation" id="Animation_5wa8t"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("WeaponPivot/Weapon:rotation")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [1.309]
-}
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_dm7nj"]
-_data = {
-&"RESET": SubResource("Animation_5wa8t"),
-&"swing_left_1": SubResource("Animation_p7tob"),
-&"swing_right_1": SubResource("Animation_dm7nj"),
-&"swing_right_2": SubResource("Animation_v0k0e")
-}
-
-[node name="Player" type="CharacterBody2D"]
+[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("sprite")]
+motion_mode = 1
 script = ExtResource("1_q3lat")
+sprite = NodePath("Sprite2D")
 metadata/_edit_group_ = true
 
-[node name="PlayerSprite" type="Sprite2D" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="."]
 unique_name_in_owner = true
-position = Vector2(0, -3)
 texture = ExtResource("2_6ysni")
+offset = Vector2(0, -3)
 hframes = 9
 vframes = 7
 frame = 54
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, -1)
 rotation = -1.5708
 shape = SubResource("CapsuleShape2D_l2ndj")
 
-[node name="BaseAnimations" type="AnimationPlayer" parent="."]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 unique_name_in_owner = true
 libraries = {
 &"": SubResource("AnimationLibrary_vlldt")
 }
 
-[node name="WeaponAnimations" type="AnimationPlayer" parent="."]
-unique_name_in_owner = true
-libraries = {
-&"": SubResource("AnimationLibrary_dm7nj")
-}
+[node name="MoveComponent" parent="." instance=ExtResource("6_0j2ni")]
 
-[node name="WeaponPivot" type="Node2D" parent="."]
-unique_name_in_owner = true
-
-[node name="Weapon" parent="WeaponPivot" instance=ExtResource("3_j23h2")]
-unique_name_in_owner = true
-position = Vector2(-1, 0)
-rotation = 1.309
-
-[node name="WeaponStateMachine" type="Node" parent="." node_paths=PackedStringArray("initial_state")]
-unique_name_in_owner = true
-script = ExtResource("3_tok1r")
-initial_state = NodePath("WeaponIdle")
-
-[node name="WeaponAttack" type="Node" parent="WeaponStateMachine" node_paths=PackedStringArray("idle_state")]
+[node name="HealthComponent" type="Node" parent="."]
 script = ExtResource("6_6ysni")
-idle_state = NodePath("../WeaponRun")
+metadata/_custom_type_script = "uid://bdxjt6risbf0r"
 
-[node name="WeaponIdle" type="Node" parent="WeaponStateMachine" node_paths=PackedStringArray("attack_state")]
-script = ExtResource("6_v0k0e")
-attack_state = NodePath("../WeaponAttack")
-
-[node name="WeaponRun" type="Node" parent="WeaponStateMachine" node_paths=PackedStringArray("idle_state", "attack_state")]
-script = ExtResource("7_5wa8t")
-idle_state = NodePath("../WeaponIdle")
-attack_state = NodePath("../WeaponAttack")
-
-[node name="BaseStateMachine" type="Node" parent="." node_paths=PackedStringArray("initial_state")]
-unique_name_in_owner = true
-script = ExtResource("3_tok1r")
-initial_state = NodePath("Idle")
-
-[node name="Idle" type="Node" parent="BaseStateMachine" node_paths=PackedStringArray("run_state", "dash_state")]
-script = ExtResource("4_ddoul")
-run_state = NodePath("../Run")
-dash_state = NodePath("../Dodge")
-
-[node name="Run" type="Node" parent="BaseStateMachine" node_paths=PackedStringArray("idle_state", "dash_state")]
-script = ExtResource("5_8g4oa")
-idle_state = NodePath("../Idle")
-dash_state = NodePath("../Dodge")
-
-[node name="Dodge" type="Node" parent="BaseStateMachine" node_paths=PackedStringArray("run_state", "idle_state")]
+[node name="HurtboxComponent" type="Area2D" parent="." node_paths=PackedStringArray("health")]
+collision_layer = 0
 script = ExtResource("7_vlldt")
-run_state = NodePath("../Run")
-idle_state = NodePath("../Idle")
-dash_speed = 200.0
-dash_duration = 0.2
-dash_cooldown_duration = 1.0
+health = NodePath("../HealthComponent")
+metadata/_custom_type_script = "uid://cic7s54oydpa5"
 
-[node name="MoveComponent" type="Node" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HurtboxComponent"]
+position = Vector2(0, -5)
+shape = SubResource("CapsuleShape2D_vlldt")
+
+[node name="StateMachine" type="Node" parent="." node_paths=PackedStringArray("initial_state")]
 unique_name_in_owner = true
 script = ExtResource("8_s1rgi")
+initial_state = NodePath("Idle_State")
+metadata/_custom_type_script = "uid://daxoyx25qqd4y"
+
+[node name="Idle_State" type="Node" parent="StateMachine" node_paths=PackedStringArray("run_state", "dash_state")]
+script = ExtResource("9_v0k0e")
+run_state = NodePath("../Run_State")
+dash_state = NodePath("../Dodge_State")
+
+[node name="Run_State" type="Node" parent="StateMachine" node_paths=PackedStringArray("idle_state", "dash_state")]
+script = ExtResource("10_5wa8t")
+idle_state = NodePath("../Idle_State")
+dash_state = NodePath("../Dodge_State")
+
+[node name="Dodge_State" type="Node" parent="StateMachine" node_paths=PackedStringArray("run_state", "idle_state")]
+script = ExtResource("11_p7tob")
+run_state = NodePath("../Run_State")
+idle_state = NodePath("../Idle_State")
+dash_cooldown_duration = 0.3

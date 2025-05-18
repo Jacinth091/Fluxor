@@ -40,5 +40,5 @@ func Physics_Update(delta: float) -> void:
 func _on_follow_area_body_entered(body: Node2D) -> void:
 	if body is Player:
 		print("Player detected, transitioning to follow state.")
-		Transitioned.emit(self, "EnemyFollow")  
+		#Transitioned.emit(self, "EnemyFollow")  
 	pass

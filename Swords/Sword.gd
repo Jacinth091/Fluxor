@@ -1,4 +1,4 @@
-class_name Weapon
+class_name Sword
 extends Node2D
 
 @onready var _weapon_sprite: Sprite2D = %WeaponSprite

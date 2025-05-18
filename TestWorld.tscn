@@ -1,7 +1,9 @@
-[gd_scene load_steps=7 format=4 uid="uid://dkl1nalqhrru2"]
+[gd_scene load_steps=9 format=4 uid="uid://dkl1nalqhrru2"]
 
 [ext_resource type="Texture2D" uid="uid://dghbr7by5wvka" path="res://World/Dungeon_Tileset.png" id="1_7c1qw"]
+[ext_resource type="PackedScene" uid="uid://bv10x2n2estxu" path="res://Enemies/Enemy.tscn" id="1_74u7v"]
 [ext_resource type="PackedScene" uid="uid://ua0jgl625ama" path="res://Player/Player.tscn" id="3_74u7v"]
+[ext_resource type="PackedScene" uid="uid://nuihechv0u7g" path="res://WeaponScene/WeaponSword.tscn" id="3_cjeqb"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_i7llj"]
 texture = ExtResource("1_7c1qw")
@@ -535,10 +537,15 @@ terrain_set_0/terrain_0/name = "Background"
 terrain_set_0/terrain_0/color = Color(0.5, 0.34375, 0.25, 1)
 sources/0 = SubResource("TileSetAtlasSource_74u7v")
 
-[node name="World" type="Node2D" groups=["player"]]
+[node name="World" type="Node2D" groups=["Player"]]
+
+[node name="Enemy" parent="." instance=ExtResource("1_74u7v")]
+position = Vector2(94, 77)
 
 [node name="Player" parent="." instance=ExtResource("3_74u7v")]
 position = Vector2(125, 77)
+
+[node name="WeaponSword" parent="Player" instance=ExtResource("3_cjeqb")]
 
 [node name="Dungeon" type="TileMapLayer" parent="."]
 z_index = -1
